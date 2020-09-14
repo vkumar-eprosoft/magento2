@@ -122,14 +122,14 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
     protected $fileSystem;
 
     /**
-     * @deprecated
+     * @deprecated 103.0.2
      *
      * @var ImageContentInterfaceFactory
      */
     protected $contentFactory;
 
     /**
-     * @deprecated
+     * @deprecated 103.0.2
      *
      * @var ImageProcessorInterface
      */
@@ -141,7 +141,7 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
     protected $extensionAttributesJoinProcessor;
 
     /**
-     * @deprecated
+     * @deprecated 103.0.2
      *
      * @var \Magento\Catalog\Model\Product\Gallery\Processor
      */
@@ -404,7 +404,7 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
     /**
      * Process new gallery media entry.
      *
-     * @deprecated
+     * @deprecated 103.0.2
      * @see MediaGalleryProcessor::processNewMediaGalleryEntry()
      *
      * @param ProductInterface $product
@@ -669,7 +669,7 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
     /**
      * Helper function that adds a FilterGroup to the collection.
      *
-     * @deprecated 101.1.0
+     * @deprecated 102.0.0
      * @param \Magento\Framework\Api\Search\FilterGroup $filterGroup
      * @param Collection $collection
      * @return void
@@ -728,14 +728,14 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
     /**
      * Retrieve collection processor
      *
-     * @deprecated 101.1.0
+     * @deprecated 102.0.0
      * @return CollectionProcessorInterface
      */
     private function getCollectionProcessor()
     {
         if (!$this->collectionProcessor) {
             $this->collectionProcessor = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                'Magento\Catalog\Model\Api\SearchCriteria\ProductCollectionProcessor'
+                \Magento\Catalog\Model\Api\SearchCriteria\ProductCollectionProcessor::class
             );
         }
         return $this->collectionProcessor;
@@ -845,7 +845,6 @@ class ProductRepository implements \Magento\Catalog\Api\ProductRepositoryInterfa
             throw new CouldNotSaveException(__($e->getMessage()));
         } catch (LocalizedException $e) {
             throw $e;
-            // phpcs:disable Magento2.Exceptions.ThrowCatch
         } catch (\Exception $e) {
             throw new CouldNotSaveException(
                 __('The product was unable to be saved. Please try again.'),

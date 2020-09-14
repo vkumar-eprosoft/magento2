@@ -53,6 +53,13 @@
         <data key="label">Yes</data>
         <data key="value">1</data>
     </entity>
+    <entity name="EnableFlatRateDefaultPriceConfigData">
+        <data key="path">carriers/flatrate/price</data>
+        <data key="scope">carriers</data>
+        <data key="scope_id">1</data>
+        <data key="label">Yes</data>
+        <data key="value">5.00</data>
+    </entity>
     <entity name="EnableFlatRateToSpecificCountriesConfigData">
         <data key="path">carriers/flatrate/sallowspecific</data>
         <data key="scope">carriers</data>
@@ -80,5 +87,30 @@
         <data key="scope_id">1</data>
         <data key="label">No</data>
         <data key="value">0</data>
+    </entity>
+
+    <!-- Checkout Config: Display Cart Summary -->
+    <entity name="DisplayItemsQuantities">
+        <data key="path">checkout/cart_link/use_qty</data>
+        <data key="label">Display items quantities</data>
+        <data key="value">1</data>
+    </entity>
+    <entity name="DisplayUniqueItems">
+        <data key="path">checkout/cart_link/use_qty</data>
+        <data key="label">Display number of items in cart</data>
+        <data key="value">0</data>
+    </entity>
+
+    <entity name="EnableClearShoppingCart">
+        <data key="path">checkout/cart/enable_clear_shopping_cart</data>
+        <data key="label">Display clear shopping cart button on the cart page</data>
+        <data key="value">1</data>
+        <data key="textValue">Yes</data>
+    </entity>
+    <entity name="DisableClearShoppingCart">
+        <data key="path">checkout/cart/enable_clear_shopping_cart</data>
+        <data key="label">Do not display clear shopping cart button on the cart page</data>
+        <data key="value">0</data>
+        <data key="textValue">No</data>
     </entity>
 </entities>

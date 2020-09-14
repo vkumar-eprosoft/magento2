@@ -113,13 +113,14 @@ class CollectTotalsObserver implements ObserverInterface
 
             $customerCountryCode = $customerAddress->getCountryId();
             $customerVatNumber = $customerAddress->getVatId();
+            $address->setCountryId($customerCountryCode);
+            $address->setVatId($customerVatNumber);
         }
 
         $groupId = null;
         if (empty($customerVatNumber) || false == $this->customerVat->isCountryInEU($customerCountryCode)) {
-            $groupId = $customer->getId() ? $this->groupManagement->getDefaultGroup(
-                $storeId
-            )->getId() : $this->groupManagement->getNotLoggedInGroup()->getId();
+            $groupId = $customer->getId() ? $quote->getCustomerGroupId() :
+                $this->groupManagement->getNotLoggedInGroup()->getId();
         } else {
             // Magento always has to emulate group even if customer uses default billing/shipping address
             $groupId = $this->customerVat->getCustomerGroupIdBasedOnVatNumber(

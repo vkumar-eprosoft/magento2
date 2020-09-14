@@ -16,6 +16,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\View\Result\Layout as ResultLayout;
 use Magento\Captcha\Helper\Data as CaptchaHelper;
 use Magento\Captcha\Observer\CaptchaStringResolver;
+use Magento\Framework\Escaper;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\App\ObjectManager;
@@ -24,15 +25,14 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Customer\Model\Customer;
 
 /**
- * Class Send
+ * Class Send Email Wishlist Controller
  *
- * @package Magento\Wishlist\Controller\Index
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\HttpPostActionInterface
 {
     /**
-     * @var \Magento\Framework\Escaper
+     * @var Escaper
      */
     private $escaper;
 
@@ -110,7 +110,7 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
      * @param StoreManagerInterface $storeManager
      * @param CaptchaHelper|null $captchaHelper
      * @param CaptchaStringResolver|null $captchaStringResolver
-     * @param \Magento\Framework\Escaper|null $escaper
+     * @param Escaper|null $escaper
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -127,7 +127,7 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
         StoreManagerInterface $storeManager,
         ?CaptchaHelper $captchaHelper = null,
         ?CaptchaStringResolver $captchaStringResolver = null,
-        \Magento\Framework\Escaper $escaper = null
+        Escaper $escaper = null
     ) {
         $this->_formKeyValidator = $formKeyValidator;
         $this->_customerSession = $customerSession;
@@ -142,8 +142,8 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
         $this->captchaHelper = $captchaHelper ?: ObjectManager::getInstance()->get(CaptchaHelper::class);
         $this->captchaStringResolver = $captchaStringResolver ?
             : ObjectManager::getInstance()->get(CaptchaStringResolver::class);
-        $this->escaper = $escaper ?? \Magento\Framework\App\ObjectManager::getInstance()->get(
-            \Magento\Framework\Escaper::class
+        $this->escaper = $escaper ?? ObjectManager::getInstance()->get(
+            Escaper::class
         );
         parent::__construct($context);
     }
@@ -203,7 +203,7 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
                 $error = __('Please enter an email address.');
             } else {
                 if (count($emails) > $emailsLeft) {
-                    $error = __('This wish list can be shared %1 more times.', $emailsLeft);
+                    $error = __('Maximum of %1 emails can be sent.', $emailsLeft);
                 } else {
                     foreach ($emails as $index => $email) {
                         $email = trim($email);
@@ -218,7 +218,7 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
         }
 
         if ($error) {
-            $this->messageManager->addError($error);
+            $this->messageManager->addErrorMessage($error);
             $this->wishlistSession->setSharingForm($this->getRequest()->getPostValue());
             $resultRedirect->setPath('*/*/share');
             return $resultRedirect;
@@ -284,12 +284,12 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
             $this->inlineTranslation->resume();
 
             $this->_eventManager->dispatch('wishlist_share', ['wishlist' => $wishlist]);
-            $this->messageManager->addSuccess(__('Your wish list has been shared.'));
+            $this->messageManager->addSuccessMessage(__('Your wish list has been shared.'));
             $resultRedirect->setPath('*/*', ['wishlist_id' => $wishlist->getId()]);
             return $resultRedirect;
         } catch (\Exception $e) {
             $this->inlineTranslation->resume();
-            $this->messageManager->addError($e->getMessage());
+            $this->messageManager->addErrorMessage($e->getMessage());
             $this->wishlistSession->setSharingForm($this->getRequest()->getPostValue());
             $resultRedirect->setPath('*/*/share');
             return $resultRedirect;
@@ -318,7 +318,6 @@ class Send extends \Magento\Wishlist\Controller\AbstractIndex implements Action\
      *
      * @param int $wishlistId
      * @param \Magento\Framework\View\Result\Layout $resultLayout
-     * @return mixed
      */
     protected function getRssLink($wishlistId, ResultLayout $resultLayout)
     {
